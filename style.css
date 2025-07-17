@@ -1,0 +1,67 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #f06, #4a90e2); /* Modern gradient background */
+    color: #fff;
+    text-align: center;
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent black */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 90%;
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+}
+
+h1 {
+    font-size: 2.8em;
+    margin-bottom: 20px;
+    color: #ffd700; /* Gold color for heading */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+button {
+    background-color: #28a745; /* Green button */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 50px; /* Pill-shaped button */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+button:active {
+    transform: translateY(0); /* Press effect */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.explanation {
+    font-size: 0.9em;
+    margin-top: 30px;
+    color: rgba(255, 255, 255, 0.7);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding-top: 20px;
+}
