@@ -1,39 +1,21 @@
-const notifyBtn = document.getElementById('notifyBtn');
+const btn = document.getElementById('notifyBtn');
 
-// Step 1: When you click the button
-notifyBtn.addEventListener('click', () => {
+btn.addEventListener('click', () => {
+    // Request permission
+    Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+            alert("✅ Notification Permission Granted!");
 
-    // Step 2: Check if browser supports Notification API
-    if (!("Notification" in window)) {
-        alert("Your browser does not support desktop notification!");
-        return;
-    }
+            // Auto notification after 5 seconds
+            setTimeout(() => {
+                new Notification("🎉 Site Updated!", {
+                    body: "Check out the new features on the site!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/5610/5610944.png"
+                });
+            }, 5000); // 5 seconds delay
 
-    // Step 3: Check permission and ask if not granted
-    if (Notification.permission === "granted") {
-        sendNotification();
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                sendNotification();
-            } else {
-                alert("You blocked notifications!");
-            }
-        });
-    } else {
-        alert("You have blocked notifications. Please enable it in your browser settings.");
-    }
-});
-
-// Step 4: Function to send the notification
-function sendNotification() {
-    const notification = new Notification("✅ Success Notification", {
-        body: "This is your custom push notification!",
-        icon: "https://cdn-icons-png.flaticon.com/512/5610/5610944.png" // any icon link
+        } else {
+            alert("❌ You blocked notifications.");
+        }
     });
-
-    // Optional: when you click the notification
-    notification.onclick = () => {
-        window.focus();
-    };
-}
+});
