@@ -156,6 +156,13 @@ input[type="text"] {
   align-items: center;
 }
 
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
 footer {
   margin-top: 2rem;
   padding: 1rem;

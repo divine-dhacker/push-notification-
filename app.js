@@ -71,13 +71,19 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         // Show Creator Section
         showView(creatorSection);
+        loadAllScores();
     }
 
     function showView(section) {
-        [creatorSection, takerSection, quizSection, shareSection, scoreboardSection, resultSection].forEach(s => {
+        [creatorSection, takerSection, quizSection, shareSection, resultSection].forEach(s => {
             s.style.display = 'none';
         });
         section.style.display = 'block';
+        if (section === creatorSection) {
+            scoreboardSection.style.display = 'block';
+        } else {
+            scoreboardSection.style.display = 'none';
+        }
     }
 
     // === Helper Functions ===
@@ -240,11 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('scoreboard-heading').innerText = `${quizData.creatorName}'s Quiz Scores`;
                 const scoresList = document.getElementById('scores-list');
                 scoresList.innerHTML = '';
-                const scores = Object.values(quizData.scores);
-                scores.sort((a, b) => b.score - a.score);
-                scores.forEach(score => {
+                const scores = Object.entries(quizData.scores);
+                scores.sort(([, a], [, b]) => b.score - a.score);
+                scores.forEach(([scoreId, score]) => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>${score.friendName}</strong><span>${score.score} / ${quizData.questions.length}</span>`;
+                    li.innerHTML = `<strong>${score.friendName}</strong><span>${score.score} / ${quizData.questions.length}</span><button class="delete-btn" data-quiz-id="${id}" data-score-id="${scoreId}"><i class="fas fa-trash"></i></button>`;
                     scoresList.appendChild(li);
                 });
             } else {
@@ -260,5 +266,57 @@ document.addEventListener('DOMContentLoaded', () => {
         linkInput.select();
         document.execCommand('copy');
         alert("Link copied to clipboard!");
+    });
+
+    function loadAllScores() {
+        database.ref('quizzes').once('value').then(snapshot => {
+            const quizzes = snapshot.val();
+            if (quizzes) {
+                const scoresList = document.getElementById('scores-list');
+                scoresList.innerHTML = '';
+                let allScores = [];
+                for (const quizId in quizzes) {
+                    if (quizzes[quizId].scores) {
+                        for (const scoreId in quizzes[quizId].scores) {
+                            allScores.push({
+                                ...quizzes[quizId].scores[scoreId],
+                                quizId,
+                                scoreId,
+                                questionsLength: quizzes[quizId].questions.length
+                            });
+                        }
+                    }
+                }
+                allScores.sort((a, b) => b.score - a.score);
+                allScores.forEach(score => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${score.friendName}</strong><span>${score.score} / ${score.questionsLength}</span><button class="delete-btn" data-quiz-id="${score.quizId}" data-score-id="${score.scoreId}"><i class="fas fa-trash"></i></button>`;
+                    scoresList.appendChild(li);
+                });
+            }
+        });
+    }
+
+    document.getElementById('scores-list').addEventListener('click', (e) => {
+        if (e.target.closest('.delete-btn')) {
+            const button = e.target.closest('.delete-btn');
+            const quizId = button.dataset.quizId;
+            const scoreId = button.dataset.scoreId;
+            if (confirm('Are you sure you want to delete this score?')) {
+                database.ref(`quizzes/${quizId}/scores/${scoreId}`).remove()
+                    .then(() => {
+                        alert('Score deleted successfully!');
+                        if (urlParams.get('view') === 'scoreboard') {
+                            loadScoreboard(quizId);
+                        } else {
+                            loadAllScores();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting score:', error);
+                        alert('Failed to delete score.');
+                    });
+            }
+        }
     });
 });
